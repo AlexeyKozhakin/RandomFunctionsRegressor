@@ -9,7 +9,7 @@ You can install the library directly from GitHub:
 ```bash
 pip install git+https://github.com/AlexeyKozhakin/RandomFunctionsRegressor.git
 
-```
+
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.datasets import load_diabetes
@@ -54,4 +54,3 @@ plt.xlabel('Actual')
 plt.ylabel('Predicted')
 plt.title('Actual vs Predicted Values')
 plt.show()
-```
