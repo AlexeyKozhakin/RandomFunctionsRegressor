@@ -2,15 +2,18 @@ import numpy as np
 from sklearn.linear_model import Ridge
 from scipy.linalg import lstsq
 class RandomFunctionsRegressor:
-  def __init__(self, C=1, n=1e5, t=1e5, method_reg = 'mnk'):
+  def __init__(self, C=1, sig=0.0, n=1e5, t=1e5, method_reg = 'mnk'):
         self.C=C
+        self.sig=sig
         self.n=n
         self.t=t
         self.method_reg = method_reg
 
+
   def Kf(self, tau2):
-    res = np.where(tau2 == 0, self.t, self.C * (tau2 * np.log(tau2 / self.t) + self.n))
-    return res
+    with np.errstate(divide='ignore', invalid='ignore'):
+      res = np.where(tau2 == 0, self.t, self.C * (tau2 * np.log(tau2 / self.t) + self.n))
+      return res
   def abs_tau2(self, x, y):
       # Векторизованное вычисление квадрата расстояния между точками
       return np.sum((x - y)**2, axis=-1)
@@ -27,6 +30,7 @@ class RandomFunctionsRegressor:
       # Расчет матрицы A с использованием матричных операций
       abs_tau2_matrix = self.abs_tau2(X_tile, X_tile_transpose)
       A = self.Kf(abs_tau2_matrix)
+
       return A
 
   def fit(self, X_train, y_train):
@@ -34,6 +38,11 @@ class RandomFunctionsRegressor:
         self.y_train = y_train
         b=y_train
         A = self.generate_matrix_for_linear_system(X_train, y_train)
+        # Добавляем сигму
+        sigma_squared = self.sig ** 2
+
+        # Добавление значения к диагонали матрицы A
+        np.fill_diagonal(A, A.diagonal() + sigma_squared)
         if self.method_reg=='mnk':
           # Решение с использованием МНК
           self.q, residuals, rank, s = np.linalg.lstsq(A, b, rcond=None)
@@ -51,8 +60,11 @@ class RandomFunctionsRegressor:
   def predict(self, X):
     N = self.X_train.shape[0]
     K = X.shape[0]
-    M = self.y_train.shape[1]
-    y_pred = np.zeros((K, M))
+    if len(self.y_train.shape)>1:
+        M = self.y_train.shape[1]
+        y_pred = np.zeros((K, M))
+    else:
+        y_pred = np.zeros((K,))
 
     # Используйте матричные операции для извлечения x из X
     X_tile = np.tile(X, (N, 1, 1))
