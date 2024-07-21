@@ -6,14 +6,14 @@ setup(
     description='A Python library for random function regression',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
-    url='https://github.com/username/RandomFunctionsRegressor',
-    author='Your Name',
-    author_email='your.email@example.com',
+    url='https://github.com/AlexeyKozhakin/RandomFunctionsRegressor',
+    author='Alexey Kozhakin',
+    author_email='alexeykozhakin@gmail.com',
     license='MIT',
     packages=find_packages(),
     install_requires=[
-        # укажите зависимости здесь
-        # Например: 'numpy', 'pandas'
+        # зависимости
+        # 'numpy', 'pandas'
     ],
     classifiers=[
         'Programming Language :: Python :: 3',
