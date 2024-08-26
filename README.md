@@ -6,10 +6,10 @@ RandomFunctionsRegressor is a Python library for random function regression.
 
 You can install the library directly from GitHub:
 
-```bash
+```
 pip install git+https://github.com/AlexeyKozhakin/RandomFunctionsRegressor.git
-```bash
-```bash
+```
+```
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -55,4 +55,4 @@ plt.xlabel('Actual')
 plt.ylabel('Predicted')
 plt.title('Actual vs Predicted Values')
 plt.show()
-```bash
+```
