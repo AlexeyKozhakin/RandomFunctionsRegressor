@@ -9,6 +9,7 @@ You can install the library directly from GitHub:
 ```
 pip install git+https://github.com/AlexeyKozhakin/RandomFunctionsRegressor.git
 ```
+Simple example
 ```
 
 import numpy as np
