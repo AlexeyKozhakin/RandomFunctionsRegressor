@@ -1,0 +1,15 @@
+# Separate from the RFR package: dependencies for local Numerai experiments.
+numpy==2.2.6
+pandas==2.3.3
+pyarrow==25.0.1
+scipy==1.15.3
+scikit-learn==1.7.2
+lightgbm==4.6.0
+numerai-tools==0.4.3
+joblib==1.6.0
+threadpoolctl==3.7.0
+matplotlib
+nbformat
+nbclient
+ipykernel
+requests

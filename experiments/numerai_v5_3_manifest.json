@@ -1,0 +1,17 @@
+{
+  "dataset_version": "v5.3",
+  "files": {
+    "features.json": {
+      "bytes": 387149,
+      "sha256": "27de6b598b0d479415dba8062d050fc190469776f9c905feea9ee3f2bdda3631"
+    },
+    "train.parquet": {
+      "bytes": 3296841026,
+      "sha256": "05d99c729369abb2a923e3d9f8e850df2f2f1e64a89511d46b96755ba9b82943"
+    },
+    "validation.parquet": {
+      "bytes": 5687751662,
+      "sha256": "252a8cf329998b1866919855407df175dc01c7f06393f1bba6a798ec8f401739"
+    }
+  }
+}

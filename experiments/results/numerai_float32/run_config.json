@@ -1,0 +1,18 @@
+{
+  "device": "CPU",
+  "threads": 2,
+  "supports": 256,
+  "features": 42,
+  "rows": 372650,
+  "eras": 64,
+  "first_era": 588,
+  "last_era": 651,
+  "fit_seconds": {
+    "float64": 84.76936240000941,
+    "float32": 51.66081650000706
+  },
+  "timing": "3 repeats after warmup; sum of per-era medians; excludes I/O and scoring",
+  "training": "same saved sample and same 256 support coordinates; centered Ridge SVD",
+  "validation": "first eligible eras only; preliminary precision and speed check",
+  "ids_sha256": "c6dad53dd59d8e7c0954d9772edc554fa499774fe4e73556d18f932d2e460db6"
+}

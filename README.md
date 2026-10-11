@@ -2,6 +2,69 @@
 
 RandomFunctionsRegressor is a Python library for random function regression.
 
+For the Numerai experiments, reproduction on another machine, and the pending
+Colab GPU work, start with [the agent handoff](experiments/HANDOFF.md) and
+[experiment instructions](experiments/README.md). Raw datasets and fitted models
+are intentionally excluded from Git; a verified downloader is included.
+
+## LHS support-point regression
+
+The new mode uses a fixed number of Latin hypercube support points instead of
+one coefficient per training row. The original `Kf` function is unchanged:
+
+\[
+\hat y(x) = b + \sum_{j=1}^{m} a_j K_f(\|x-z_j\|^2).
+\]
+
+```python
+from RandomFunctionsRegressor import RandomFunctionsRegressor
+
+model = RandomFunctionsRegressor(
+    n_support=128,
+    random_state=42,
+    method_reg="ridge",
+    alpha=0.1,
+    batch_size=1024,
+)
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+
+print(model.support_points_.shape)  # (128, number_of_input_features)
+print(model.q.shape)                # (128,) for one target
+```
+
+`n_support` is the **total** number of support points, not the number raised to
+the power of the feature count. Bounds are the minimum and maximum of each
+training feature. Each varying coordinate has one point in each of the
+`n_support` equal-width intervals; constant coordinates remain constant.
+Prediction data do not change these bounds or support points. No input scaling
+or missing-value imputation is performed: apply any preprocessing fitted on
+training data before calling the estimator.
+
+The training design matrix has shape `(training_rows, n_support)`. It is still
+stored densely for the linear solve, so fit memory grows with both dimensions.
+Distances and predictions are evaluated in batches, without three-dimensional
+pairwise arrays. The fitted LHS model retains only support points, coefficients,
+and training bounds, rather than the full training set.
+
+- `method_reg="ridge"` minimizes squared error with coefficient penalty
+  `alpha + sig**2`, using an SVD solver.
+- `"mnk"`, `"lstsq"`, and `"svd"` solve rectangular least squares. Their
+  coefficient penalty is `sig**2`; `alpha` is not used by these methods.
+- `fit_intercept=True` adds a separate, unpenalized constant term.
+- `n_support=None` (the default) preserves the original training-point mode.
+  In that mode, the original meaning of `sig` as a matrix diagonal term remains.
+
+The kernel parameter `n` is distinct from the new `n_support` parameter.
+LHS stratifies individual coordinates; it does not guarantee uniform coverage
+of every region of a high-dimensional space.
+
+Run the LHS regression checks with:
+
+```powershell
+.\.venv\Scripts\python.exe -m unittest discover -s tests -v
+```
+
 ## Installation
 
 You can install the library directly from GitHub:

@@ -1,0 +1,9 @@
+{
+  "status": "stopped_by_user",
+  "n_support": 256,
+  "completed_validation_eras_reported": 100,
+  "planned_validation_eras": 640,
+  "fitted_model_saved": true,
+  "complete_validation_summary_available": false,
+  "note": "The full validation was stopped to run a paired float32 precision and speed experiment. The partial prediction file is not a completed evaluation artifact."
+}

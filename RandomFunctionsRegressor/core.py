@@ -1,13 +1,30 @@
 import numpy as np
 from sklearn.linear_model import Ridge
 from scipy.linalg import lstsq
-class RandomFunctionsRegressor:
-  def __init__(self, C=1, sig=0.0, n=1e5, t=1e5, method_reg = 'mnk'):
+from .lhs import _LHSBasisMixin
+
+
+class RandomFunctionsRegressor(_LHSBasisMixin):
+  """Random function regression with optional LHS support points.
+
+  Set n_support to a positive integer for rectangular basis regression.
+  n_support=None preserves the original training-point kernel mode.
+  In LHS mode, alpha is used by method_reg='ridge'; sig**2 adds an L2
+  coefficient penalty for all methods. The original Kf is unchanged.
+  """
+  def __init__(self, C=1, sig=0.0, n=1e5, t=1e5, method_reg = 'mnk',
+               n_support=None, random_state=None, alpha=0.1,
+               fit_intercept=True, batch_size=1024):
         self.C=C
         self.sig=sig
         self.n=n
         self.t=t
         self.method_reg = method_reg
+        self.n_support = n_support
+        self.random_state = random_state
+        self.alpha = alpha
+        self.fit_intercept = fit_intercept
+        self.batch_size = batch_size
 
 
   def Kf(self, tau2):
@@ -20,6 +37,8 @@ class RandomFunctionsRegressor:
 
 
   def generate_matrix_for_linear_system(self, X_train, y_train):
+      if self.n_support is not None:
+          return self.transform(X_train)
       N = X_train.shape[0]
       A = np.zeros((N, N))
 
@@ -34,6 +53,8 @@ class RandomFunctionsRegressor:
       return A
 
   def fit(self, X_train, y_train):
+        if self.n_support is not None:
+          return self._fit_lhs(X_train, y_train)
         self.X_train = X_train
         self.y_train = y_train
         b=y_train
@@ -56,8 +77,11 @@ class RandomFunctionsRegressor:
           self.q = np.dot(pseudoinv, b)
         elif self.method_reg == 'lstsq':
           self.q, residuals, rank, s = lstsq(A, b)
+        return self
 
   def predict(self, X):
+    if self.n_support is not None:
+      return self._predict_lhs(X)
     N = self.X_train.shape[0]
     K = X.shape[0]
     if len(self.y_train.shape)>1:
